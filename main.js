@@ -1,27 +1,30 @@
-var fs = require('fs');
-var data = fs.readFileSync('words.json');
-var words = JSON.parse(data);
-console.log(words);
-
-
+var words = require('./words.json');
 var express = require('express');
 var app = express();
+var bodyParser = require("body-parser");
 
-var server = app.listen(3000, listening);
+var cors = require('cors');
+app.use(cors());
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
 
+app.post('/', (req, res)=>{
+	let data = req.body;
+	if(!data)
+	{
+		res.sendStatus(404);
+		return;
+	}
+		words.push(data);
+		res.sendStatus(200);
+})
 
 app.get('/', (req, res)=>{
-    var writeWords = { name: "Michael", age: "20"};
-    var data1 = JSON.stringify(writeWords);
-    fs.appendFileSync('words.json', data1+"\n", err);
-    function err(err){
-        console.log('all set.');
-    }
-    var data2 = fs.readFileSync('words.json');
-    var words2 = JSON.parse(data1);
-    res.send(words2);
-
+    res.send(words);
 })
+
 function listening(){
     console.log("Listening on port 3000");
 }
+
+var server = app.listen(3000, listening);
